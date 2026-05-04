@@ -17,7 +17,7 @@ Follow these steps to get the project running locally:
 ### Clone and Install Dependencies
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/coz389/Laravel-12-POC.git
 cd laravel12
 
 # Install PHP dependencies
