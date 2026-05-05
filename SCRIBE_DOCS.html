@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laravel 12 API - Scribe Documentation Reference</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap');
+
+        :root {
+            --primary: #FF2D20; /* Laravel Red */
+            --secondary: #1a202c;
+            --text-main: #2d3748;
+            --text-light: #718096;
+            --bg-body: #ffffff;
+            --bg-code: #1a202c;
+            --border: #e2e8f0;
+            --scribe-blue: #3b82f6;
+        }
+
+        @page {
+            size: A4;
+            margin: 20mm;
+            @bottom-center {
+                content: "Page " counter(page);
+                font-size: 10px;
+                color: #a0aec0;
+            }
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-body);
+        }
+
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80pt;
+            color: rgba(0, 0, 0, 0.03);
+            z-index: -100;
+            white-space: nowrap;
+            pointer-events: none;
+            font-weight: 900;
+        }
+
+        /* Layout Components */
+        .page-break { page-break-before: always; }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Title Page */
+        .title-page {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .title-page img.logo {
+            width: 120px;
+            margin-bottom: 30px;
+        }
+
+        .title-page h1 {
+            font-size: 42pt;
+            margin: 0;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .title-page .subtitle {
+            font-size: 18pt;
+            color: var(--text-light);
+            margin-top: 10px;
+        }
+
+        .title-page .meta {
+            margin-top: 100px;
+            font-size: 12pt;
+        }
+
+        /* TOC */
+        .toc ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .toc li {
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dotted var(--border);
+        }
+
+        /* Typography */
+        h2 {
+            font-size: 24pt;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 8px;
+            margin-top: 40px;
+            color: var(--secondary);
+        }
+
+        h3 {
+            font-size: 18pt;
+            color: var(--scribe-blue);
+            margin-top: 30px;
+            border-left: 4px solid var(--scribe-blue);
+            padding-left: 15px;
+        }
+
+        p, li { font-size: 11pt; }
+
+        /* API Detail Boxes */
+        .api-endpoint {
+            background: #f7fafc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .method-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 10pt;
+            color: white;
+            margin-right: 10px;
+            text-transform: uppercase;
+        }
+
+        .get { background: #48bb78; }
+        .post { background: #4299e1; }
+        .put { background: #ecc94b; color: #744210; }
+        .delete { background: #f56565; }
+
+        .endpoint-url {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        /* Code Blocks */
+        pre {
+            background: var(--bg-code);
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9pt;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: #4a5568;
+            padding: 2px 8px;
+            font-size: 8pt;
+            border-radius: 0 6px 0 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            font-size: 10pt;
+        }
+
+        th { background: #edf2f7; font-weight: 600; }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 9pt;
+            color: var(--text-light);
+            padding: 10px 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="watermark">INTERNAL USE</div>
+
+    <div class="container">
+        <!-- TITLE PAGE -->
+        <div class="title-page">
+            <h1 style="color: #3b82f6;">SCRIBE</h1>
+            <h1>API DOCUMENTATION</h1>
+            <p class="subtitle">Laravel 12 + Knuckleswtf Scribe Implementation</p>
+            
+            <div class="meta">
+                <p><strong>Status:</strong> Final Draft</p>
+                <p><strong>Environment:</strong> Local / Production</p>
+                <p><strong>Date:</strong> May 4, 2026</p>
+            </div>
+        </div>
+
+        <!-- TOC -->
+        <div class="page-break"></div>
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><span>1. Overview</span></li>
+                <li><span>2. Installation & Scribe Setup</span></li>
+                <li><span>3. Configuration Details</span></li>
+                <li><span>4. Authentication APIs</span></li>
+                <li><span>5. User Management APIs</span></li>
+                <li><span>6. Generating Documentation</span></li>
+                <li><span>7. Best Practices & Annotations</span></li>
+            </ul>
+        </div>
+
+        <!-- OVERVIEW -->
+        <div class="page-break"></div>
+        <section id="overview">
+            <h2>1. Overview</h2>
+            <p>This document provides the technical specifications for the Laravel 12 API. Documentation is generated using <strong>Scribe</strong>, which extracts information from routes and controller annotations to produce human-readable HTML/Blade documentation.</p>
+            <h3>Base URL</h3>
+            <code>http://localhost:8000/api</code>
+            <h3>Documentation URL</h3>
+            <code>http://localhost:8000/docs</code>
+        </section>
+
+        <!-- INSTALLATION -->
+        <section id="installation">
+            <h2>2. Installation & Scribe Setup</h2>
+            <p>To initialize documentation in a fresh environment:</p>
+            <pre><span class="code-label">Bash</span><code>composer require knuckleswtf/scribe --dev
+php artisan vendor:publish --provider="Knuckles\Scribe\ScribeServiceProvider" --tag=scribe-config</code></pre>
+            <p>This creates the <code>config/scribe.php</code> file used to manage documentation behavior.</p>
+        </section>
+
+        <!-- AUTHENTICATION -->
+        <div class="page-break"></div>
+        <section id="auth-api">
+            <h2>4. Authentication APIs</h2>
+            <p>Authentication is handled via Laravel Sanctum. All protected routes require a <code>Bearer Token</code>.</p>
+
+            <div class="api-detail">
+                <h3>4.1 User Login</h3>
+                <div class="api-endpoint">
+                    <span class="method-badge post">POST</span>
+                    <span class="endpoint-url">/login</span>
+                </div>
+                <p>Authenticate credentials and receive a bearer token.</p>
+                
+                <h4>Request Body</h4>
+                <table>
+                    <tr><th>Parameter</th><th>Type</th><th>Required</th><th>Example</th></tr>
+                    <tr><td>email</td><td>string</td><td>Yes</td><td>john@example.com</td></tr>
+                    <tr><td>password</td><td>string</td><td>Yes</td><td>password123</td></tr>
+                </table>
+
+                <h4>Response (200 OK)</h4>
+                <pre><span class="code-label">JSON</span><code>{
+  "status": true,
+  "message": "Login successful",
+  "token": "2|xyz456token..."
+}</code></pre>
+            </div>
+
+            <div class="api-detail">
+                <h3>4.2 User Logout</h3>
+                <div class="api-endpoint">
+                    <span class="method-badge post">POST</span>
+                    <span class="endpoint-url">/logout</span>
+                </div>
+                <p>Revokes the current user's session token.</p>
+                <p><em>Requirement: @authenticated header.</em></p>
+            </div>
+        </section>
+
+        <!-- USER MANAGEMENT -->
+        <div class="page-break"></div>
+        <section id="user-api">
+            <h2>5. User Management APIs</h2>
+
+            <div class="api-detail">
+                <h3>5.1 List Users</h3>
+                <div class="api-endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="endpoint-url">/users</span>
+                </div>
+                <p>Fetch paginated list of all registered users.</p>
+
+                <h4>Scribe Annotation Example</h4>
+                <pre><span class="code-label">PHP</span><code>/**
+ * @group User Management
+ * @authenticated
+ * @responseField status boolean Whether the request succeeded.
+ */
+public function index() { ... }</code></pre>
+
+                <h4>Response (200 OK)</h4>
+                <pre><span class="code-label">JSON</span><code>{
+  "status": true,
+  "data": {
+    "data": [
+      { "id": 1, "name": "Admin", "email": "admin@example.com" }
+    ],
+    "total": 1
+  }
+}</code></pre>
+            </div>
+        </section>
+
+        <!-- GENERATING -->
+        <div class="page-break"></div>
+        <section id="generating">
+            <h2>6. Generating Documentation</h2>
+            <p>Scribe documentation is not updated automatically. Run the following command after making changes to your controllers or routes:</p>
+            <pre><span class="code-label">Terminal</span><code>php artisan scribe:generate</code></pre>
+            <p>This command performs the following:</p>
+            <ul>
+                <li>Analyzes <code>routes/api.php</code>.</li>
+                <li>Extracts DocBlock comments and Attributes.</li>
+                <li>Generates <code>resources/views/scribe/index.blade.php</code>.</li>
+                <li>Outputs Postman and OpenAPI specs in <code>storage/app/private/scribe/</code>.</li>
+            </ul>
+        </section>
+
+        <!-- BEST PRACTICES -->
+        <section id="best-practices">
+            <h2>7. Best Practices & Annotations</h2>
+            <ul>
+                <li><strong>@group:</strong> Always categorize endpoints (e.g., <code>@group Authentication</code>).</li>
+                <li><strong>@bodyParam:</strong> Use this to define expected input. Scribe will automatically generate "Try It Out" fields.</li>
+                <li><strong>@response:</strong> Provide manual response examples for complex logic.</li>
+                <li><strong>@authenticated:</strong> Mark routes that require a Sanctum token.</li>
+            </ul>
+        </section>
+
+    </div>
+
+    <div class="footer">
+        Laravel 12 API Documentation &bull; Generated via Scribe &bull; Page <span class="page-counter"></span>
+    </div>
+
+</body>
+</html>

@@ -5,25 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use OpenApi\Attributes as OA;
+use Illuminate\Validation\Rule;
 
+/**
+ * @group User Management
+ * @authenticated
+ * 
+ * APIs for viewing and managing user data.
+ */
 class UserController extends Controller
 {
-    #[OA\Get(path: "/api/users", summary: "List Users", tags: ["Users"])]
-    #[OA\Response(
-        response: 200,
-        description: "Success",
-        content: new OA\JsonContent(
-            allOf: [
-                new OA\Schema(ref: "#/components/schemas/PaginatedResponse"),
-                new OA\Schema(properties: [
-                    new OA\Property(property: "data", properties: [
-                        new OA\Property(property: "data", type: "array", items: new OA\Items(ref: "#/components/schemas/User"))
-                    ])
-                ])
-            ]
-        )
-    )]
+    /**
+     * Get User List
+     * 
+     * Returns a paginated list of users.
+     * 
+     * @queryParam page int The page number. Example: 1
+     */
     public function index()
     {
         $users = User::latest()->paginate(10);
@@ -35,10 +33,15 @@ class UserController extends Controller
         ]);
     }
 
-    
-    #[OA\Post(path: "/api/users", summary: "Create User", tags: ["Users"])]
-    #[OA\RequestBody(content: new OA\JsonContent(ref: "#/components/schemas/User"))] // reused!
-    #[OA\Response(response: 201, description: "Created")]
+    /**
+     * Create User
+     * 
+     * Add a new user to the database.
+     * 
+     * @bodyParam name string required The name of the user. Example: John Doe
+     * @bodyParam email string required A unique email address. Example: john@example.com
+     * @bodyParam password string required Minimum 6 characters. Example: secret123
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -48,7 +51,6 @@ class UserController extends Controller
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
-
         $user = User::create($validated);
 
         return response()->json([
@@ -58,80 +60,41 @@ class UserController extends Controller
         ], 201);
     }
 
-    #[OA\Get(
-        path: "/api/users/{id}",
-        summary: "Get single user",
-        tags: ["Users"],
-        parameters: [
-            new OA\Parameter(
-                name: "id",
-                in: "path",
-                required: true,
-                schema: new OA\Schema(type: "integer")
-            )
-        ],
-        responses: [
-            new OA\Response(response: 200, description: "User found"),
-            new OA\Response(response: 404, description: "User not found")
-        ]
-    )]
-    public function show($id)
+    /**
+     * Get Individual User
+     * 
+     * Fetch details of a specific user.
+     * 
+     * @urlParam user int required The ID of the user. Example: 1
+     */
+    public function show(User $user)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json([
-                'status' => false,
-                'message' => 'User not found'
-            ], 404);
-        }
-
+        // Route Model Binding automatically returns 404 if user not found
         return response()->json([
             'status' => true,
             'data' => $user
         ]);
     }
 
-    #[OA\Put(
-        path: "/api/users/{id}",
-        summary: "Update user",
-        tags: ["Users"],
-        parameters: [
-            new OA\Parameter(
-                name: "id",
-                in: "path",
-                required: true,
-                schema: new OA\Schema(type: "integer")
-            )
-        ],
-        requestBody: new OA\RequestBody(
-            content: new OA\JsonContent(
-                properties: [
-                    new OA\Property(property: "name", type: "string"),
-                    new OA\Property(property: "email", type: "string"),
-                    new OA\Property(property: "password", type: "string")
-                ]
-            )
-        ),
-        responses: [
-            new OA\Response(response: 200, description: "Updated"),
-            new OA\Response(response: 404, description: "User not found")
-        ]
-    )]
-    public function update(Request $request, $id)
+    /**
+     * Update User
+     * 
+     * Update existing user information.
+     * 
+     * @urlParam user int required The ID of the user. Example: 1
+     * @bodyParam name string The name of the user.
+     * @bodyParam email string A unique email address.
+     */
+    public function update(Request $request, User $user)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json([
-                'status' => false,
-                'message' => 'User not found'
-            ], 404);
-        }
-
         $validated = $request->validate([
             'name' => 'sometimes|required|string|max:255',
-            'email' => "sometimes|required|email|unique:users,email,$id",
+            'email' => [
+                'sometimes',
+                'required',
+                'email',
+                Rule::unique('users')->ignore($user->id)
+            ],
             'password' => 'nullable|min:6',
         ]);
 
@@ -148,34 +111,15 @@ class UserController extends Controller
         ]);
     }
 
-    #[OA\Delete(
-        path: "/api/users/{id}",
-        summary: "Delete user",
-        tags: ["Users"],
-        parameters: [
-            new OA\Parameter(
-                name: "id",
-                in: "path",
-                required: true,
-                schema: new OA\Schema(type: "integer")
-            )
-        ],
-        responses: [
-            new OA\Response(response: 200, description: "Deleted"),
-            new OA\Response(response: 404, description: "User not found")
-        ]
-    )]
-    public function destroy($id)
+    /**
+     * Delete User
+     * 
+     * Remove a user from the system.
+     * 
+     * @urlParam user int required The ID of the user. Example: 1
+     */
+    public function destroy(User $user)
     {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json([
-                'status' => false,
-                'message' => 'User not found'
-            ], 404);
-        }
-
         $user->delete();
 
         return response()->json([
